@@ -492,7 +492,7 @@ function displayTeacherSchedule(teacherName) {
     建構課表 HTML
 ═══════════════════════════════════════════════════════════ */
 function buildScheduleTable(cells, mode, currentClassName = '') {
-    const periods   = (typeof CONFIG !== 'undefined' && CONFIG.PERIOD_TIMES) || [];
+    const periods   = (typeof CONFIG !== 'undefined' && CONFIG.PERIOD_TIMES) || {};
     const hasEarly  = Object.keys(cells).some(k => k.endsWith('-0'));
 
     let html = '<table class="schedule-table"><thead><tr>';
@@ -500,6 +500,7 @@ function buildScheduleTable(cells, mode, currentClassName = '') {
     DAYS.forEach(d => html += `<th>${d}</th>`);
     html += '</tr></thead><tbody>';
 
+    // 1. 早自習
     if (hasEarly) {
         const et = periods[0] || { start: '07:35', end: '08:10' };
         html += `<tr><td class="td-period">
@@ -512,7 +513,34 @@ function buildScheduleTable(cells, mode, currentClassName = '') {
         html += '</tr>';
     }
 
-    for (let p = 1; p <= 8; p++) {
+    // 2. 上午第 1 ~ 4 節
+    for (let p = 1; p <= 4; p++) {
+        const pt = periods[p] || { start: '', end: '' };
+        html += `<tr><td class="td-period"><div class="period-num">第${p}節</div>`;
+        if (pt.start && pt.start !== '——') {
+            html += `<div class="period-time">${pt.start}<br>${pt.end}</div>`;
+        }
+        html += '</td>';
+        for (let d = 1; d <= 5; d++) {
+            html += renderCell(cells[`${d}-${p}`], mode, d, p, currentClassName);
+        }
+        html += '</tr>';
+    }
+
+    // ⬇⬇⬇ 3. 插入【午休】一列 (編號設為 9) ⬇⬇⬇
+    const restTime = periods[9] || { start: '12:00', end: '13:00' };
+    html += `<tr class="tr-lunch-break"><td class="td-period">
+        <div class="period-num" style="font-weight:bold; color:#d97706;">午休</div>
+        <div class="period-time">${restTime.start}<br>${restTime.end}</div>
+    </td>`;
+    for (let d = 1; d <= 5; d++) {
+        html += renderCell(cells[`${d}-9`], mode, d, 9, currentClassName);
+    }
+    html += '</tr>';
+    // ⬆⬆⬆ 午休結束 ⬆⬆⬆
+
+    // 4. 下午第 5 ~ 8 節
+    for (let p = 5; p <= 8; p++) {
         const pt = periods[p] || { start: '', end: '' };
         html += `<tr><td class="td-period"><div class="period-num">第${p}節</div>`;
         if (pt.start && pt.start !== '——') {
@@ -528,7 +556,6 @@ function buildScheduleTable(cells, mode, currentClassName = '') {
     html += '</tbody></table>';
     return html;
 }
-
 function renderCell(cell, mode, day, period, currentClassName = '') {
     if (!cell) return '<td class="td-empty"></td>';
     
