@@ -490,7 +490,7 @@ function displayTeacherSchedule(teacherName) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-    建構課表 HTML (包含午餐/午休時間)
+    建構課表 HTML (包含午休時間)
 ═══════════════════════════════════════════════════════════ */
 function buildScheduleTable(cells, mode, currentClassName = '') {
     const periods   = (typeof CONFIG !== 'undefined' && CONFIG.PERIOD_TIMES) || [];
@@ -516,15 +516,15 @@ function buildScheduleTable(cells, mode, currentClassName = '') {
 
     // 2. 正課 1 ~ 8 節 (包含午休)
     for (let p = 1; p <= 8; p++) {
-        // ── 插入午餐與午休列（於第 4 節後、第 5 節前） ──
+        // ── 插入午休列（於第 4 節後、第 5 節前） ──
         if (p === 5) {
-            const lunchTime = periods['lunch'] || { start: '12:00', end: '13:05' };
+            const lunchTime = periods['lunch'] || { start: '12:20', end: '13:00' };
             html += `<tr class="tr-break">
                 <td class="td-period">
-                    <div class="period-num">午餐/午休</div>
+                    <div class="period-num">午休</div>
                     <div class="period-time">${escText(lunchTime.start)}<br>${escText(lunchTime.end)}</div>
                 </td>
-                <td colspan="5" class="td-break-content">午餐與午休時間</td>
+                <td colspan="5" class="td-break-content">午休時間</td>
             </tr>`;
         }
 
