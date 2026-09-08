@@ -490,7 +490,7 @@ function displayTeacherSchedule(teacherName) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-    建構課表 HTML (包含午休時間)
+    建構課表 HTML (包含午休)
 ═══════════════════════════════════════════════════════════ */
 function buildScheduleTable(cells, mode, currentClassName = '') {
     const periods   = (typeof CONFIG !== 'undefined' && CONFIG.PERIOD_TIMES) || [];
@@ -524,7 +524,7 @@ function buildScheduleTable(cells, mode, currentClassName = '') {
                     <div class="period-num">午休</div>
                     <div class="period-time">${escText(lunchTime.start)}<br>${escText(lunchTime.end)}</div>
                 </td>
-                <td colspan="5" class="td-break-content">午休時間</td>
+                <td colspan="5" class="td-break-content">午休</td>
             </tr>`;
         }
 
